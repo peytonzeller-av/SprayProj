@@ -19,6 +19,7 @@ export default function App() {
           { key: "Jimmy" },
           { key: "Julie" },
           { key: "Anthony" },
+          { key: "Antonio" },
         ]}
         renderItem={({ item }) => <Text style={styles.item}>{item.key}</Text>}
       />
