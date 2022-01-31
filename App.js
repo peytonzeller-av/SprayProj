@@ -1,40 +1,56 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, FlatList } from "react-native";
-// import Icon from "@mui/material/Icon";
+import { Ionicons } from "@expo/vector-icons";
+import ProblemList from "./ProblemList";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      {/* <Icon color="primary">add_circle</Icon> */}
-      <FlatList
-        data={[
-          { key: "Devin" },
-          { key: "Dan" },
-          { key: "Dominic" },
-          { key: "Jackson" },
-          { key: "James" },
-          { key: "Joel" },
-          { key: "John" },
-          { key: "Jillian" },
-          { key: "Jimmy" },
-          { key: "Julie" },
-          { key: "Anthony" },
-          { key: "Antonio" },
-        ]}
-        renderItem={({ item }) => <Text style={styles.item}>{item.key}</Text>}
-      />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ title: "Peyton's Problems" }}
+        />
+        <Stack.Screen name="ProblemView" component={ProblemDetails} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
+
+// TODO - Break out in to separate file
+const HomeScreen = () => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Ionicons name="md-add-circle" size={32} />
+      </View>
+      <ProblemList />
+    </View>
+  );
+};
+
+// TODO - Break out in to separate file
+const ProblemDetails = ({ navigation, route }) => {
+  return (
+    <View>
+      <Text>{route.params.name}</Text>
+      <Text>V{route.params.grade}</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 22,
   },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
+  header: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
 });
