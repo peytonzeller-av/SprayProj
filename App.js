@@ -5,6 +5,7 @@ import ProblemList from "./ProblemList";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AddProblem from "./client/components/AddProblem";
+import ProblemDetails from "./client/components/ProblemDetails";
 
 const Stack = createNativeStackNavigator();
 
@@ -40,16 +41,6 @@ const HomeScreen = () => {
         />
       </View>
       <ProblemList />
-    </View>
-  );
-};
-
-// TODO - Break out in to separate file
-const ProblemDetails = ({ navigation, route }) => {
-  return (
-    <View>
-      <Text>{route.params.name}</Text>
-      <Text>V{route.params.grade}</Text>
     </View>
   );
 };

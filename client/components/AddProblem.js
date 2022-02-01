@@ -48,6 +48,7 @@ const AddProblem = ({ navigation, route }) => {
       });
 
       if (!response?.cancelled && response?.uri) {
+        console.log("URI", response?.uri);
         setImage(response?.uri);
       }
     }
@@ -153,8 +154,6 @@ const styles = StyleSheet.create({
   titleHeader: {
     fontSize: 20,
     fontWeight: "bold",
-    flexDirection: "row",
-    justifyContent: "center",
   },
   titleText: {
     fontSize: 20,
