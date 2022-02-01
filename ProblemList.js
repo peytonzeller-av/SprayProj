@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { List, Colors } from "react-native-paper";
+import { List } from "react-native-paper";
 
 const ProblemList = () => {
   const navigation = useNavigation();

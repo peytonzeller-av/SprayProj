@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import ProblemList from "./ProblemList";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AddProblem from "./client/components/AddProblem";
 
 const Stack = createNativeStackNavigator();
 
@@ -49,15 +50,6 @@ const ProblemDetails = ({ navigation, route }) => {
     <View>
       <Text>{route.params.name}</Text>
       <Text>V{route.params.grade}</Text>
-    </View>
-  );
-};
-
-// TODO - Break out in to separate file
-const AddProblem = ({ navigation, route }) => {
-  return (
-    <View>
-      <Text>{"Create New Problem!"}</Text>
     </View>
   );
 };
