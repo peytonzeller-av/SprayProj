@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import ProblemList from "./ProblemList";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator();
@@ -17,6 +17,7 @@ export default function App() {
           options={{ title: "Peyton's Problems" }}
         />
         <Stack.Screen name="ProblemView" component={ProblemDetails} />
+        <Stack.Screen name="AddProblemView" component={AddProblem} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -24,10 +25,18 @@ export default function App() {
 
 // TODO - Break out in to separate file
 const HomeScreen = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="md-add-circle" size={32} />
+        <Ionicons
+          style={{
+            paddingRight: 10,
+          }}
+          name="md-pencil-outline"
+          size={24}
+          onPress={() => navigation.navigate("AddProblemView")}
+        />
       </View>
       <ProblemList />
     </View>
@@ -44,13 +53,22 @@ const ProblemDetails = ({ navigation, route }) => {
   );
 };
 
+// TODO - Break out in to separate file
+const AddProblem = ({ navigation, route }) => {
+  return (
+    <View>
+      <Text>{"Create New Problem!"}</Text>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 22,
   },
   header: {
     flexDirection: "row",
     justifyContent: "flex-end",
+    padding: 5,
   },
 });

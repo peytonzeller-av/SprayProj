@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { List } from "react-native-paper";
+import { List, Colors } from "react-native-paper";
 
 const ProblemList = () => {
   const navigation = useNavigation();
   const [myProblems, setMyProblems] = useState([
     // TODO: Mock Data
-    { key: "Problem1", grade: 1, createdOn: "01-30-2022" },
-    { key: "Problem2", grade: 3, createdOn: "01-30-2022" },
-    { key: "Problem3", grade: 5, createdOn: "01-30-2022" },
-    { key: "Problem4", grade: 2, createdOn: "01-30-2022" },
-    { key: "Problem5", grade: 8, createdOn: "01-30-2022" },
-    { key: "Problem6", grade: 7, createdOn: "01-30-2022" },
-    { key: "Problem7", grade: 6, createdOn: "01-30-2022" },
-    { key: "Problem8", grade: 6, createdOn: "01-30-2022" },
-    { key: "Problem9", grade: 4, createdOn: "01-30-2022" },
-    { key: "Problem10", grade: 3, createdOn: "01-30-2022" },
+    { key: "Problem1", grade: 1, createdOn: "01-30-2022", sent: true },
+    { key: "Problem2", grade: 3, createdOn: "01-30-2022", sent: false },
+    { key: "Problem3", grade: 5, createdOn: "01-30-2022", sent: true },
+    { key: "Problem4", grade: 2, createdOn: "01-30-2022", sent: false },
+    { key: "Problem5", grade: 8, createdOn: "01-30-2022", sent: true },
+    { key: "Problem6", grade: 7, createdOn: "01-30-2022", sent: false },
+    { key: "Problem7", grade: 6, createdOn: "01-30-2022", sent: true },
+    { key: "Problem8", grade: 6, createdOn: "01-30-2022", sent: false },
+    { key: "Problem9", grade: 4, createdOn: "01-30-2022", sent: true },
+    { key: "Problem10", grade: 3, createdOn: "01-30-2022", sent: false },
   ]);
 
   const grades = myProblems.reduce((acc, curr) => {
@@ -26,6 +26,15 @@ const ProblemList = () => {
 
   const getProblemsForGrade = (grade) =>
     myProblems.filter((problem) => grade === problem.grade);
+
+  const getSentIcon = (problem) => {
+    console.log(problem);
+    return problem.sent ? (
+      <List.Icon icon="check-box-outline" />
+    ) : (
+      <List.Icon icon="checkbox-blank-outline" />
+    );
+  };
 
   // TODO - Wait for wifi issues to get resolved before testing w/ express
   // useEffect(() => {
@@ -37,9 +46,10 @@ const ProblemList = () => {
   return (
     <List.AccordionGroup>
       {Array.from(grades).map((grade) => (
-        <List.Accordion title={`V${grade}`} id={grade}>
-          {getProblemsForGrade(grade).map((problem) => (
+        <List.Accordion stye={styles.textGrade} title={`V${grade}`} id={grade}>
+          {getProblemsForGrade(grade).map((problem, idx) => (
             <List.Item
+              key={`${grade}-${problem.key}-${idx}`}
               title={problem.key}
               onPress={() =>
                 navigation.navigate("ProblemView", {
@@ -47,6 +57,7 @@ const ProblemList = () => {
                   grade: problem.grade,
                 })
               }
+              right={(props) => getSentIcon(problem)}
             />
           ))}
         </List.Accordion>
@@ -57,7 +68,6 @@ const ProblemList = () => {
 
 const styles = StyleSheet.create({
   textGrade: {
-    marginRight: 6,
     fontWeight: "bold",
   },
 });
