@@ -1,25 +1,19 @@
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const ProblemList = () => {
-  const navigation = useNavigation();
-  // Mock Data
-  const data = [
-    { key: "Problem1", grade: 1, createdOn: "01-30-2022" },
-    { key: "Problem2", grade: 3, createdOn: "01-30-2022" },
-    { key: "Problem3", grade: 5, createdOn: "01-30-2022" },
-    { key: "Problem4", grade: 2, createdOn: "01-30-2022" },
-    { key: "Problem5", grade: 8, createdOn: "01-30-2022" },
-    { key: "Problem6", grade: 7, createdOn: "01-30-2022" },
-    { key: "Problem7", grade: 6, createdOn: "01-30-2022" },
-    { key: "Problem8", grade: 6, createdOn: "01-30-2022" },
-    { key: "Problem9", grade: 4, createdOn: "01-30-2022" },
-    { key: "Problem10", grade: 3, createdOn: "01-30-2022" },
-  ];
+  const [myProblems, setMyProblems] = useState([]);
+
+  useEffect(() => {
+    const problems = fetch("10.0.0.233:5000/problems") // TODO - Error is here, may be due me connected to ethernet instead of a wifi network
+      .then((res) => console.log(res))
+      .catch((e) => console.log("new error", e));
+  }, []);
 
   return (
     <FlatList
-      data={data}
+      data={[]}
       renderItem={({ item }) => (
         <Text
           onPress={() =>
