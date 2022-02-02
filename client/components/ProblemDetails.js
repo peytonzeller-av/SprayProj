@@ -11,30 +11,23 @@ import Checkbox from "expo-checkbox";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 
-// TODO - Break out in to separate file
 const ProblemDetails = ({ navigation, route }) => {
   const [editMode, setEditMode] = useState(false);
   const [description, setDescription] = useState("Need to get stronger");
   return (
     <View>
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "row",
-        }}
-      >
-        {/* Display Static Name/ Sent Status For Non-Edit Mode */}
-        {!editMode && (
+      {!editMode && (
+        <View style={styles.topContainer}>
+          {/* Display Static Name/ Sent Status For Non-Edit Mode */}
           <Text style={styles.titleHeader}>
             {route.params.name}, V{route.params.grade}
           </Text>
-        )}
-        {!editMode && (
           <Ionicons name="checkmark-circle" size={24} color="black" />
-        )}
-        {/* Display Editable Name/ Editable Sent Status for Edit Mode */}
-        {editMode && (
+        </View>
+      )}
+      {/* Display Editable Name/ Sent Status */}
+      {editMode && (
+        <View style={styles.topContainer}>
           <TextInput
             style={styles.titleHeader}
             onChangeText={() => console.log("setName")}
@@ -43,15 +36,13 @@ const ProblemDetails = ({ navigation, route }) => {
             placeholderTextColor="gray"
             keyboardType="default"
           />
-        )}
-        {editMode && (
           <Checkbox
             value={true}
             onValueChange={() => console.log("checked")}
             color="black"
           />
-        )}
-      </View>
+        </View>
+      )}
       <View
         style={{
           alignItems: "center",
@@ -113,9 +104,10 @@ const ProblemDetails = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  view: {
-    justifyContent: "center",
+  topContainer: {
     alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
   },
   titleHeader: {
     fontSize: 20,
