@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     height: 35,
     width: 325,
   },
-  descriptionInput: { width: 325, padding: 5 },
+  descriptionInput: { padding: 5 },
 });
 
 export default AddProblem;

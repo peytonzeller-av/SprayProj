@@ -5,11 +5,16 @@ import {
   Image,
   ScrollView,
   Button,
+  TextInput,
 } from "react-native";
+import Checkbox from "expo-checkbox";
 import { Ionicons } from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
 
 // TODO - Break out in to separate file
 const ProblemDetails = ({ navigation, route }) => {
+  const [editMode, setEditMode] = useState(false);
+  const [description, setDescription] = useState("Need to get stronger");
   return (
     <View>
       <View
@@ -19,10 +24,33 @@ const ProblemDetails = ({ navigation, route }) => {
           flexDirection: "row",
         }}
       >
-        <Text style={styles.titleHeader}>
-          {route.params.name}, V{route.params.grade}
-        </Text>
-        <Ionicons name="checkmark-circle" size={24} color="black" />
+        {/* Display Static Name/ Sent Status For Non-Edit Mode */}
+        {!editMode && (
+          <Text style={styles.titleHeader}>
+            {route.params.name}, V{route.params.grade}
+          </Text>
+        )}
+        {!editMode && (
+          <Ionicons name="checkmark-circle" size={24} color="black" />
+        )}
+        {/* Display Editable Name/ Editable Sent Status for Edit Mode */}
+        {editMode && (
+          <TextInput
+            style={styles.titleHeader}
+            onChangeText={() => console.log("setName")}
+            value={""}
+            placeholder={route.params.name}
+            placeholderTextColor="gray"
+            keyboardType="default"
+          />
+        )}
+        {editMode && (
+          <Checkbox
+            value={true}
+            onValueChange={() => console.log("checked")}
+            color="black"
+          />
+        )}
       </View>
       <View
         style={{
@@ -40,19 +68,44 @@ const ProblemDetails = ({ navigation, route }) => {
           ></Image>
         </View>
         <View style={styles.descriptionContainer}>
-          <ScrollView>
-            <Text>
-              I need stronger fingers cause I'm a weak little bich. Made it to
-              the second move
-            </Text>
-          </ScrollView>
+          {/* Show Static Description in View Mode*/}
+          {!editMode && (
+            <ScrollView>
+              <Text>{description}</Text>
+            </ScrollView>
+          )}
+          {/* Show Description Input in Edit Mode */}
+          {editMode && (
+            <TextInput
+              style={{
+                alignSelf: "flex-start",
+              }}
+              multiline
+              onChangeText={() => "set new description"}
+              value={""}
+              placeholder={description}
+              placeholderTextColor="white"
+              keyboardType="default"
+            />
+          )}
         </View>
         <View style={styles.buttonContainer}>
-          <Button
-            title="Edit Problem"
-            onPress={() => console.log("save")} // TODO!
-            color="#DEB10A"
-          />
+          {/* Show "Edit" Button in View Mode */}
+          {!editMode && (
+            <Button
+              title="Edit Problem"
+              onPress={() => setEditMode(!editMode)}
+              color="#DEB10A"
+            />
+          )}
+          {/* Show "Save" Button in Edit Mode */}
+          {editMode && (
+            <Button
+              title="Save Problem"
+              onPress={() => console.log("save!")}
+              color="#A6F3CA"
+            />
+          )}
         </View>
       </View>
     </View>
@@ -81,8 +134,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   descriptionContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
     width: 325,
     height: 150,
     borderRadius: 10,
