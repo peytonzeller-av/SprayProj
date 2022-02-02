@@ -1,40 +1,59 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Button,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 // TODO - Break out in to separate file
 const ProblemDetails = ({ navigation, route }) => {
   return (
-    <View
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Text style={styles.titleHeader}>
-        {route.params.name}, V{route.params.grade}
-      </Text>
-      <View style={styles.imageContainer}>
-        <Image
-          style={{ height: "100%", width: "100%" }}
-          source={{
-            // TODO - GET
-            uri: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSprayProj-59b0df3d-9662-4aae-93a9-ce43836b8b20/ImagePicker/c0f2c280-e99d-44b4-852e-f64141e1eef7.jpg",
-          }}
-        ></Image>
-      </View>
-      <View style={styles.descriptionContainer}>
-        <Text>
-          'm not the classic profile of what the ladies want You might think I'm
-          depressed as can be But when I look in the mirror I see sexy-ass me
-          And if that's somethin that you can't respect then that's peace My
-          life's better without you, actually To everyone out there, who's a
-          little different I say damn a magazine, these is God's fingerprints
-          You can call me ugly but can't take nothing from me I am what I am,
-          doctor, you ain't gotta love me If you would please turn in your Bible
-          To beauty tips according to Forest Whitaker In the third chapter of
-          the third line Brother Ali, would you please read to the choir for me,
-          son I'ma be all right You ain't gotta be my friend tonight (you ain't
-          gotta love me)
+    <View>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "row",
+        }}
+      >
+        <Text style={styles.titleHeader}>
+          {route.params.name}, V{route.params.grade}
         </Text>
+        <Ionicons name="checkmark-circle" size={24} color="black" />
+      </View>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <View style={styles.imageContainer}>
+          <Image
+            style={{ height: "100%", width: "100%" }}
+            source={{
+              // TODO - GET
+              uri: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSprayProj-59b0df3d-9662-4aae-93a9-ce43836b8b20/ImagePicker/2036e27a-2d91-4d21-8d0e-774f5407c6fd.jpg",
+            }}
+          ></Image>
+        </View>
+        <View style={styles.descriptionContainer}>
+          <ScrollView>
+            <Text>
+              I need stronger fingers cause I'm a weak little bich. Made it to
+              the second move
+            </Text>
+          </ScrollView>
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Edit Problem"
+            onPress={() => console.log("save")} // TODO!
+            color="#DEB10A"
+          />
+        </View>
       </View>
     </View>
   );
@@ -49,6 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     padding: 10,
+    width: 300,
   },
   imageContainer: {
     height: 300,
@@ -57,7 +77,6 @@ const styles = StyleSheet.create({
     margin: 6,
     justifyContent: "center",
     alignItems: "center",
-    borderStyle: "dashed",
     borderWidth: 0.75,
     overflow: "hidden",
   },
@@ -71,6 +90,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     margin: 6,
     padding: 5,
+  },
+  buttonContainer: {
+    borderRadius: 10,
+    overflow: "hidden",
+    margin: 6,
+    height: 35,
+    width: 325,
   },
 });
 

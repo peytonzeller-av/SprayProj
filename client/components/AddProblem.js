@@ -85,6 +85,17 @@ const AddProblem = ({ navigation, route }) => {
         </Picker>
       </View>
       <View>
+        <View style={styles.descriptionContainer}>
+          <TextInput
+            style={styles.descriptionInput}
+            multiline
+            onChangeText={setDescription}
+            value={description}
+            placeholder="Description"
+            placeholderTextColor="white"
+            keyboardType="default"
+          />
+        </View>
         <TouchableOpacity
           onPress={openImageLibrary}
           style={styles.imageContainer}
@@ -98,16 +109,6 @@ const AddProblem = ({ navigation, route }) => {
             <Text style={styles.uploadBtn}>Upload Image</Text>
           )}
         </TouchableOpacity>
-      </View>
-      <View style={styles.descriptionContainer}>
-        <TextInput
-          style={styles.input}
-          onChangeText={setDescription}
-          value={description}
-          placeholder="Description"
-          placeholderTextColor="white"
-          keyboardType="default"
-        />
       </View>
       <View style={styles.buttonContainer}>
         <Button
@@ -126,9 +127,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   inputContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
     width: 325,
     borderRadius: 10,
     borderWidth: 0.75,
@@ -141,8 +139,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   descriptionContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
     width: 325,
     height: 150,
     borderRadius: 10,
@@ -183,6 +179,7 @@ const styles = StyleSheet.create({
     height: 35,
     width: 325,
   },
+  descriptionInput: { width: 325, padding: 5 },
 });
 
 export default AddProblem;
