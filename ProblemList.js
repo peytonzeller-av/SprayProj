@@ -5,19 +5,7 @@ import { List } from "react-native-paper";
 
 const ProblemList = () => {
   const navigation = useNavigation();
-  const [myProblems, setMyProblems] = useState([
-    // TODO: Mock Data
-    { key: "Problem1", grade: 1, createdOn: "01-30-2022", sent: true },
-    { key: "Problem2", grade: 3, createdOn: "01-30-2022", sent: false },
-    { key: "Problem3", grade: 5, createdOn: "01-30-2022", sent: true },
-    { key: "Problem4", grade: 2, createdOn: "01-30-2022", sent: false },
-    { key: "Problem5", grade: 8, createdOn: "01-30-2022", sent: true },
-    { key: "Problem6", grade: 7, createdOn: "01-30-2022", sent: false },
-    { key: "Problem7", grade: 6, createdOn: "01-30-2022", sent: true },
-    { key: "Problem8", grade: 6, createdOn: "01-30-2022", sent: false },
-    { key: "Problem9", grade: 4, createdOn: "01-30-2022", sent: true },
-    { key: "Problem10", grade: 3, createdOn: "01-30-2022", sent: false },
-  ]);
+  const [myProblems, setMyProblems] = useState([]);
 
   const grades = myProblems.reduce((acc, curr) => {
     acc.add(curr.grade);
@@ -25,7 +13,7 @@ const ProblemList = () => {
   }, new Set());
 
   const getProblemsForGrade = (grade) =>
-    myProblems.filter((problem) => grade === problem.grade);
+    myProblems.filter((problem) => grade === problem.grade) || [];
 
   const getSentIcon = (problem) => {
     console.log(problem);
@@ -37,16 +25,36 @@ const ProblemList = () => {
   };
 
   // TODO - Wait for wifi issues to get resolved before testing w/ express
-  // useEffect(() => {
-  //   const problems = fetch("10.0.0.233:5000/problems") // TODO - Error is here, may be due me connected to ethernet instead of a wifi network
-  //     .then((res) => console.log(res))
-  //     .catch((e) => console.log("new error", e));
-  // }, []);
+  useEffect(() => {
+    try {
+      const fetchProblems = async () => {
+        // get the data from the api
+        const data = await fetch("http://10.0.0.217:5000/problems"); // TODO - ENV specific
+        // convert data to json
+        const myRetrievedProblems = await data.json();
+        console.log(
+          "----------MY PROBLEMS -----------------",
+          myRetrievedProblems
+        );
+        setMyProblems(myRetrievedProblems);
+      };
+
+      // call the function
+      fetchProblems();
+    } catch (e) {
+      console.log("---------ERROR!---------", e);
+    }
+  }, []);
 
   return (
-    <List.AccordionGroup>
-      {Array.from(grades).map((grade) => (
-        <List.Accordion stye={styles.textGrade} title={`V${grade}`} id={grade}>
+    <List.AccordionGroup key={1}>
+      {Array.from(grades).map((grade, i) => (
+        <List.Accordion
+          stye={styles.textGrade}
+          title={`V${grade}`}
+          id={`${grade}-${i}`}
+          key={`${grade}-${i}`}
+        >
           {getProblemsForGrade(grade).map((problem, idx) => (
             <List.Item
               key={`${grade}-${problem.key}-${idx}`}
