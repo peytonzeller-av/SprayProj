@@ -1,7 +1,14 @@
 const express = require("express");
 const multer = require("multer");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const Problem = require("./models/Problem");
+const problemController = require("./controllers/problems");
 const app = express();
 const port = 5000;
+
+// middleware
+app.use(bodyParser.json());
 
 const mockListProblems = [
   {
@@ -76,18 +83,26 @@ const mockListProblems = [
   },
 ];
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+app.post("/create", problemController.createProblem);
 
-app.get("/problems", (req, res) => {
-  console.log("Made it to problems ");
-  res.status(200).send(mockListProblems);
+// GET all problems
+app.get("/problems", async (req, res) => {
+  const problems = await Problem.find();
+  res.status(200).send(problems);
 });
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+mongoose.connect("mongodb://localhost:27017/sprayproj-db").then(
+  () => {
+    console.log("DB Connection Successful");
+  },
+  (err) => {
+    console.log("DB Connection Unsuccessful");
+  }
+);
 
 // TODO - Finish (YT Tutorial Helps)
 // Upload Image

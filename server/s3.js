@@ -7,6 +7,8 @@ const region = process.env.AWS_BUCKET_REGION;
 const accessKeyId = process.env.AWS_ACCESS_KEY;
 const secretAccessKey = process.env.AWS_SECRET_KEY;
 
+
+// TODO: Need to finish hooking this up
 const s3 = new S3({
   region,
   accessKeyId,
