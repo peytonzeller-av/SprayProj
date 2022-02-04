@@ -58,10 +58,10 @@ const ProblemList = () => {
           {getProblemsForGrade(grade).map((problem, idx) => (
             <List.Item
               key={`${grade}-${problem.key}-${idx}`}
-              title={problem.key}
+              title={problem.name}
               onPress={() =>
                 navigation.navigate("ProblemView", {
-                  name: problem.key,
+                  name: problem.name,
                   grade: problem.grade,
                 })
               }

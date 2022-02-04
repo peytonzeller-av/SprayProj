@@ -11,3 +11,20 @@ exports.createProblem = async (req, res) => {
     console.log("error saving to db", e);
   }
 };
+
+exports.getAllProblems = async (req, res) => {
+  try {
+    console.log("getting all problems....");
+    const problems = await Problem.find();
+    res.status(200).send(problems);
+  } catch (e) {
+    console.log("error retrieving problems", e);
+    // todo res.send(500)
+  }
+};
+
+// TODO - Delete Problem By ID
+
+// TODO - Update Problem
+
+// TODO - GET Problem By ID

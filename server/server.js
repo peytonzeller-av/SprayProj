@@ -10,86 +10,8 @@ const port = 5000;
 // middleware
 app.use(bodyParser.json());
 
-const mockListProblems = [
-  {
-    key: "Steve's Problem",
-    grade: 5,
-    createdOn: "01-30-2022",
-    sent: true,
-    description: "First Problem Sent",
-  },
-  {
-    key: "Pey's Problem",
-    grade: 3,
-    createdOn: "01-30-2022",
-    sent: false,
-    description: "Pey set",
-  },
-  {
-    key: "Isaiah's Problem",
-    grade: 5,
-    createdOn: "01-30-2022",
-    sent: true,
-    description: "Isaiah Sent",
-  },
-  {
-    key: "Carson's Problem",
-    grade: 2,
-    createdOn: "01-30-2022",
-    sent: false,
-    description: "Carson Sent",
-  },
-  {
-    key: "Pinch!",
-    grade: 8,
-    createdOn: "01-30-2022",
-    sent: true,
-    description: "Cool Pinch Move",
-  },
-  {
-    key: "Big Dyno",
-    grade: 7,
-    createdOn: "01-30-2022",
-    sent: false,
-    description: "Hard AF!",
-  },
-  {
-    key: "Mystery Move",
-    grade: 6,
-    createdOn: "01-30-2022",
-    sent: true,
-    description: "What is this?",
-  },
-  {
-    key: "Why not?",
-    grade: 6,
-    createdOn: "01-30-2022",
-    sent: false,
-    description: "Hey, why not",
-  },
-  {
-    key: "Buddy's Run Memorial",
-    grade: 4,
-    createdOn: "01-30-2022",
-    sent: true,
-    description: "Classic!",
-  },
-  {
-    key: "JBMP",
-    grade: 3,
-    createdOn: "01-30-2022",
-    sent: false,
-    description: "Gotta Do it!",
-  },
-];
-
 app.post("/create", problemController.createProblem);
-
-// GET all problems
-app.get("/problems", async (req, res) => {
-  const problems = await Problem.find();
-  res.status(200).send(problems);
-});
+app.get("/problems", problemController.getAllProblems);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
