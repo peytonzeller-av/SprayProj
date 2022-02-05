@@ -23,7 +23,16 @@ exports.getAllProblems = async (req, res) => {
   }
 };
 
-// TODO - Delete Problem By ID
+exports.deleteProblemById = async (req, res) => {
+  try {
+    console.log("req.body....", req.body);
+    await Problem.deleteOne({ id: req.body.id });
+    res.status(200).send("success");
+  } catch (e) {
+    console.log("error deleting problems", e);
+    // todo res.send(500)
+  }
+};
 
 // TODO - Update Problem
 

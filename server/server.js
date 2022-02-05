@@ -12,6 +12,7 @@ app.use(bodyParser.json());
 
 app.post("/create", problemController.createProblem);
 app.get("/problems", problemController.getAllProblems);
+app.delete("/delete", problemController.deleteProblemById);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
