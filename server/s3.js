@@ -25,7 +25,7 @@ const uploadFile = (file) => {
     Key: file.filename,
   };
 
-  s3.upload(uploadParams).promise();
+  return s3.upload(uploadParams).promise();
 };
 exports.uploadFile = uploadFile;
 
@@ -35,6 +35,8 @@ const getFileStream = (fileKey) => {
     Key: fileKey,
     Bucket: bucketName,
   };
+
+  console.log("----- download params", downloadParams);
 
   return s3.getObject(downloadParams).createReadStream();
 };

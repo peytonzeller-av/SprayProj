@@ -30,10 +30,11 @@ app.post(
     try {
       const file = req.file;
       console.log("file, ", file);
-      await uploadFile(file);
+      const result = await uploadFile(file);
       console.log("-------------", file);
 
-      res.status(200).send({ data: file.filename });
+      // res.status(200).send({ data: file.filename });
+      res.send({ imagePath: `/images/${result.Key}` });
     } catch (e) {
       console.log("error uplaoding image ", e);
     }
@@ -41,10 +42,11 @@ app.post(
 );
 
 app.get("/image/:key", (req, res) => {
-  console.log("req ", req.params);
   const key = req.params.key;
+  console.log("req key", req.params.key);
   const readStream = getFileStream(key);
 
+  console.log("piping....");
   readStream.pipe(res);
 });
 

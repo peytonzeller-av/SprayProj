@@ -14,6 +14,14 @@ import React, { useState, useEffect } from "react";
 const ProblemDetails = ({ navigation, route }) => {
   const [editMode, setEditMode] = useState(false);
   const [description, setDescription] = useState("Need to get stronger");
+  const [image, setImage] = useState(null);
+  useEffect(async () => {
+    console.log("getting image.....");
+    const image = await fetch(
+      "http://10.0.0.217:5000/image/4179faa643c43fa866aa66c786bbc433"
+    );
+    // setImage(image);
+  }, []);
   return (
     <View>
       {!editMode && (
@@ -52,10 +60,7 @@ const ProblemDetails = ({ navigation, route }) => {
         <View style={styles.imageContainer}>
           <Image
             style={{ height: "100%", width: "100%" }}
-            source={{
-              // TODO - GET
-              uri: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSprayProj-59b0df3d-9662-4aae-93a9-ce43836b8b20/ImagePicker/2036e27a-2d91-4d21-8d0e-774f5407c6fd.jpg",
-            }}
+            source={{uri: "http://10.0.0.217:5000/image/4179faa643c43fa866aa66c786bbc433"}}
           ></Image>
         </View>
         <View style={styles.descriptionContainer}>
