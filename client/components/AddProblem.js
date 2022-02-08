@@ -11,12 +11,14 @@ import { Snackbar, DefaultTheme } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
+import { setWarningFilter } from "react-native/Libraries/LogBox/Data/LogBoxData";
 
 const AddProblem = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [grade, setGrade] = useState(1);
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const [file, setFile] = useState(null);
   const [disableSaveButton, setDisableSaveButton] = useState(true);
   const [successMessage, setSuccessMessage] = useState(false);
 
@@ -58,16 +60,46 @@ const AddProblem = ({ navigation, route }) => {
         // base64: true
       });
 
-      if (!response?.cancelled && response?.uri) {
-        console.log("URI", response?.uri);
+      if (!response?.cancelled) {
         console.log("file", response);
         setImage(response?.uri);
+        setFile(response);
       }
+    }
+  };
+
+  const uploadImage = async () => {
+    try {
+      console.log("trying to save image client...... ");
+      const formData = new FormData();
+      // formData.append("uploaded_problem_image", {
+      //   uri: file.uri,
+      //   type: file.type,
+      //   name: "testing...",
+      // });
+      formData.append("uploaded_problem_image", {
+        name: new Date() + "_problem",
+        uri: file.uri,
+        type: "image/jpg",
+      });
+      console.log("formData: ", formData);
+      await fetch("http://10.0.0.217:5000/image", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      });
+      console.log("success saving image - client");
+    } catch (e) {
+      console.log("failed uploading problem image - client", e);
     }
   };
 
   // TODO - still working.. need to get the file path
   const saveProblem = async () => {
+    await uploadImage();
     const req = Object.assign(
       {},
       {
@@ -77,35 +109,21 @@ const AddProblem = ({ navigation, route }) => {
         filePath: "",
       }
     );
-    // TODO - Upload File first
-    // const saveProblem = async () => {
-    //   const data = await fetch("http://10.0.0.217:5000/create", {
+
+    // await fetch(
+    //   "http://10.0.0.217:5000/create",
+    //   {
     //     method: "POST",
     //     headers: {
     //       "Content-Type": "application/json",
     //     },
     //     body: JSON.stringify(req),
-    //   }); // TODO - ENV specific
-    //   console.log("saved");
-    // };
-
-    // // call the function
-    // saveProblem();
-
-    await fetch(
-      "http://10.0.0.217:5000/create",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(req),
-      } // TODO - ENV specific
-    );
-    setSuccessMessage(true);
-    setTimeout(() => {
-      navigation.navigate("Home", { refreshList: true });
-    }, 5000);
+    //   } // TODO - ENV specific
+    // );
+    // setSuccessMessage(true);
+    // setTimeout(() => {
+    //   navigation.navigate("Home", { refreshList: true });
+    // }, 5000);
   };
   return (
     <View style={styles.view}>
@@ -208,7 +226,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     margin: 6,
     padding: 5,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   view: {
     justifyContent: "center",

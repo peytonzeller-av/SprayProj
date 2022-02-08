@@ -28,10 +28,12 @@ app.post(
   upload.single("uploaded_problem_image"),
   async (req, res) => {
     try {
-      console.log("Uploading image...");
       const file = req.file;
+      console.log("file, ", file);
       await uploadFile(file);
-      res.status(200).send("success uploading image");
+      console.log("-------------", file);
+
+      res.status(200).send({ data: file.filename });
     } catch (e) {
       console.log("error uplaoding image ", e);
     }
