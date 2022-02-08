@@ -6,10 +6,9 @@ import {
   TouchableOpacity,
   Button,
   Image,
-  Picker,
 } from "react-native";
 import { Snackbar, DefaultTheme } from "react-native-paper";
-// import { Picker } from "react-native-picker/picker"; // TODO - Get this to work instead of importing from above
+import { Picker } from "@react-native-picker/picker";
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 
@@ -139,8 +138,8 @@ const AddProblem = ({ navigation, route }) => {
       <View style={styles.inputContainer}>
         <Picker
           selectedValue={grade}
-          style={styles.input}
           onValueChange={setGrade}
+          style={styles.input}
         >
           {grades.map((grade, idx) => (
             <Picker.Item
@@ -209,6 +208,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     margin: 6,
     padding: 5,
+    justifyContent: "center"
   },
   view: {
     justifyContent: "center",

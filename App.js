@@ -39,8 +39,8 @@ const HomeScreen = ({ route }) => {
           style={{
             paddingRight: 10,
           }}
-          name="md-pencil-outline"
-          size={24}
+          name="md-add-circle-outline"
+          size={32}
           onPress={() => navigation.navigate("AddProblemView")}
         />
       </View>
