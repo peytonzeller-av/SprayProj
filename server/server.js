@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const Problem = require("./models/Problem");
 const problemController = require("./controllers/problems");
+const { uploadFile, getFileStream } = require("./s3");
 const app = express();
 const port = 5000;
 
@@ -13,9 +14,36 @@ app.use(bodyParser.json());
 app.post("/create", problemController.createProblem);
 app.get("/problems", problemController.getAllProblems);
 app.delete("/delete", problemController.deleteProblemById);
+app.post("/update", problemController.updateProblem);
+app.post("/getById", problemController.findProblemById);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
+});
+
+// TODO - move to controller
+const upload = multer({ dest: "uploads/" });
+app.post(
+  "/image",
+  upload.single("uploaded_problem_image"),
+  async (req, res) => {
+    try {
+      console.log("Uploading image...");
+      const file = req.file;
+      await uploadFile(file);
+      res.status(200).send("success uploading image");
+    } catch (e) {
+      console.log("error uplaoding image ", e);
+    }
+  }
+);
+
+app.get("/image/:key", (req, res) => {
+  console.log("req ", req.params);
+  const key = req.params.key;
+  const readStream = getFileStream(key);
+
+  readStream.pipe(res);
 });
 
 mongoose.connect("mongodb://localhost:27017/sprayproj-db").then(
@@ -26,22 +54,3 @@ mongoose.connect("mongodb://localhost:27017/sprayproj-db").then(
     console.log("DB Connection Unsuccessful");
   }
 );
-
-// TODO - Finish (YT Tutorial Helps)
-// Upload Image
-// const upload = multer({ dest: "uploads/" });
-// app.post("/uploadProblem", upload.single("uploaded_problem"), async (req, res) => {
-//   console.log(req.file, req.body);
-//   const file = req.file
-//   console.log(file)
-
-//   // apply filter
-//   // resize
-
-//   const result = await uploadFile(file)
-//   await unlinkFile(file.path)
-//   console.log(result)
-//   const description = req.body.description
-//   res.send({imagePath: `/images/${result.Key}`})
-//   res.sendStatus(200);
-// });

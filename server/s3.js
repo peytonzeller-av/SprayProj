@@ -7,7 +7,6 @@ const region = process.env.AWS_BUCKET_REGION;
 const accessKeyId = process.env.AWS_ACCESS_KEY;
 const secretAccessKey = process.env.AWS_SECRET_KEY;
 
-
 // TODO: Need to finish hooking this up
 const s3 = new S3({
   region,
@@ -17,8 +16,8 @@ const s3 = new S3({
 
 // uploads an image file to s3
 const uploadFile = (file) => {
-  console.log("Environment: ", process.env);
   const fileStream = fs.createReadStream(file.path);
+  console.log("fileSream ", fileStream);
 
   const uploadParams = {
     Bucket: bucketName,
@@ -26,7 +25,7 @@ const uploadFile = (file) => {
     Key: file.filename,
   };
 
-  return s3.upload(uploadParams).promise();
+  s3.upload(uploadParams).promise();
 };
 exports.uploadFile = uploadFile;
 
