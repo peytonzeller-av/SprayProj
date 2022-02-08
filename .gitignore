@@ -14,3 +14,4 @@ web-build/
 .DS_Store
 server/.env
 server/package-lock.json
+package-lock.json

@@ -4,17 +4,29 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Picker,
   Button,
   Image,
+  Picker,
 } from "react-native";
+import { Snackbar, DefaultTheme } from "react-native-paper";
+// import { Picker } from "react-native-picker/picker"; // TODO - Get this to work instead of importing from above
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 
 const AddProblem = ({ navigation, route }) => {
   const [name, setName] = useState("");
+  const [grade, setGrade] = useState(1);
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const [disableSaveButton, setDisableSaveButton] = useState(true);
+  const [successMessage, setSuccessMessage] = useState(false);
+
+  useEffect(() => {
+    console.log(name, grade, description);
+    if (name && grade && description && image) {
+      setDisableSaveButton(false);
+    }
+  });
 
   // Static list of grades
   const grades = [
@@ -49,16 +61,71 @@ const AddProblem = ({ navigation, route }) => {
 
       if (!response?.cancelled && response?.uri) {
         console.log("URI", response?.uri);
+        console.log("file", response);
         setImage(response?.uri);
       }
     }
   };
 
+  // TODO - still working.. need to get the file path
+  const saveProblem = async () => {
+    const req = Object.assign(
+      {},
+      {
+        name,
+        description,
+        grade,
+        filePath: "",
+      }
+    );
+    // TODO - Upload File first
+    // const saveProblem = async () => {
+    //   const data = await fetch("http://10.0.0.217:5000/create", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(req),
+    //   }); // TODO - ENV specific
+    //   console.log("saved");
+    // };
+
+    // // call the function
+    // saveProblem();
+
+    await fetch(
+      "http://10.0.0.217:5000/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req),
+      } // TODO - ENV specific
+    );
+    setSuccessMessage(true);
+    setTimeout(() => {
+      navigation.navigate("Home", { refreshList: true });
+    }, 5000);
+  };
   return (
     <View style={styles.view}>
-      <View style={styles.titleHeader}>
-        <Text style={styles.titleText}>{"Create New Problem!"}</Text>
-      </View>
+      {!successMessage && (
+        <View style={styles.titleHeader}>
+          <Text style={styles.titleText}>{"Create New Problem!"}</Text>
+        </View>
+      )}
+      {successMessage && (
+        <View style={styles.snackbarStyle}>
+          <Snackbar
+            visible={successMessage}
+            onDismiss={() => console.log("")}
+            theme={theme}
+          >
+            Problem Saved!
+          </Snackbar>
+        </View>
+      )}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -71,9 +138,9 @@ const AddProblem = ({ navigation, route }) => {
       </View>
       <View style={styles.inputContainer}>
         <Picker
-          selectedValue={""}
+          selectedValue={grade}
           style={styles.input}
-          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+          onValueChange={setGrade}
         >
           {grades.map((grade, idx) => (
             <Picker.Item
@@ -113,13 +180,22 @@ const AddProblem = ({ navigation, route }) => {
       <View style={styles.buttonContainer}>
         <Button
           title="Save Problem"
-          onPress={() => console.log("save")} // TODO!
+          onPress={saveProblem}
           color="#D6ECEF"
+          disabled={disableSaveButton}
         />
       </View>
     </View>
   );
 };
+
+const theme = Object.assign({}, DefaultTheme, {
+  colors: {
+    ...DefaultTheme.colors,
+    onSurface: "#53c273",
+  },
+});
+
 const styles = StyleSheet.create({
   input: {
     height: 35,
@@ -180,6 +256,10 @@ const styles = StyleSheet.create({
     width: 325,
   },
   descriptionInput: { padding: 5 },
+  snackbarStyle: {
+    height: 50,
+    width: 150,
+  },
 });
 
 export default AddProblem;

@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { List } from "react-native-paper";
 
-const ProblemList = () => {
+const ProblemList = ({ refreshList }) => {
   const navigation = useNavigation();
   const [myProblems, setMyProblems] = useState([]);
 
@@ -24,7 +24,6 @@ const ProblemList = () => {
     );
   };
 
-  // TODO - Wait for wifi issues to get resolved before testing w/ express
   useEffect(() => {
     try {
       const fetchProblems = async () => {
@@ -32,10 +31,6 @@ const ProblemList = () => {
         const data = await fetch("http://10.0.0.217:5000/problems"); // TODO - ENV specific
         // convert data to json
         const myRetrievedProblems = await data.json();
-        console.log(
-          "----------MY PROBLEMS -----------------",
-          myRetrievedProblems
-        );
         setMyProblems(myRetrievedProblems);
       };
 
@@ -44,7 +39,9 @@ const ProblemList = () => {
     } catch (e) {
       console.log("---------ERROR!---------", e);
     }
-  }, []);
+  }, [refreshList]);
+
+  console.log(refreshList);
 
   return (
     <List.AccordionGroup key={1}>

@@ -6,6 +6,7 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AddProblem from "./client/components/AddProblem";
 import ProblemDetails from "./client/components/ProblemDetails";
+import { useEffect } from "react";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,8 +27,11 @@ export default function App() {
 }
 
 // TODO - Break out in to separate file
-const HomeScreen = () => {
+const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setParams({ refreshList: false });
+  }, [route.params?.refreshList]);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -40,7 +44,7 @@ const HomeScreen = () => {
           onPress={() => navigation.navigate("AddProblemView")}
         />
       </View>
-      <ProblemList />
+      <ProblemList refreshList={route.params?.refreshList} />
     </View>
   );
 };
