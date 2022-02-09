@@ -10,27 +10,82 @@ import {
 import Checkbox from "expo-checkbox";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
+import { Snackbar, DefaultTheme } from "react-native-paper";
 
 const ProblemDetails = ({ navigation, route }) => {
   const [editMode, setEditMode] = useState(false);
-  const [description, setDescription] = useState("Need to get stronger");
-  const [image, setImage] = useState(null);
+  const [newDescription, setNewDescription] = useState("");
+  const [newName, setNewName] = useState("");
+  const [newSentValue, setNewSentValue] = useState(route.params.problem?.sent);
+  const [imageKey, setImageKey] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(false);
+
+  // Get Problem Image
   useEffect(async () => {
-    console.log("getting image.....");
-    const image = await fetch(
-      "http://10.0.0.217:5000/image/4179faa643c43fa866aa66c786bbc433"
-    );
-    // setImage(image);
+    try {
+      console.log("getting image key for problem...");
+      const imageURL = `http://10.0.0.217:5000/image/${route.params.problem?.filePath}`;
+      const image = await fetch(imageURL, {
+        method: "GET",
+      });
+      setImageKey(imageURL);
+    } catch (e) {
+      console.log("error retrieving image for problem ", e);
+    }
   }, []);
+
+  const handleSave = async () => {
+    const req = Object.assign(
+      {},
+      {
+        key: route.params.problem?._id,
+        problem: {
+          name: newName ? newName : route.params.problem?.name,
+          grade: route.params.problem?.grade,
+          description: newDescription
+            ? newDescription
+            : route.params.problem?.description,
+          filePath: route.params?.problem?.filePath,
+          sent: newSentValue,
+        },
+      }
+    );
+    console.log("reques...", req);
+    await fetch("http://10.0.0.217:5000/update", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(req),
+    });
+    setSuccessMessage(true);
+    setTimeout(() => {
+      navigation.navigate("Home", { refreshList: true });
+    }, 2000);
+  };
   return (
     <View>
+      {successMessage && (
+        <View style={{ justifyContent: "center", flexDirection: "row" }}>
+          <View style={styles.snackbarStyle}>
+            <Snackbar visible={successMessage} theme={theme}>
+              Problem Saved!
+            </Snackbar>
+          </View>
+        </View>
+      )}
       {!editMode && (
         <View style={styles.topContainer}>
           {/* Display Static Name/ Sent Status For Non-Edit Mode */}
           <Text style={styles.titleHeader}>
-            {route.params.name}, V{route.params.grade}
+            {route.params.problem?.name}, V{route.params.problem?.grade}
           </Text>
-          <Ionicons name="checkmark-circle" size={24} color="black" />
+          {route.params.problem.sent && (
+            <Ionicons name="checkmark-circle" size={24} color="black" />
+          )}
+          {!route.params.problem.sent && (
+            <Ionicons name="md-square-outline" size={24} color="black" />
+          )}
         </View>
       )}
       {/* Display Editable Name/ Sent Status */}
@@ -38,15 +93,15 @@ const ProblemDetails = ({ navigation, route }) => {
         <View style={styles.topContainer}>
           <TextInput
             style={styles.titleHeader}
-            onChangeText={() => console.log("setName")}
-            value={""}
-            placeholder={route.params.name}
+            onChangeText={setNewName}
+            value={newName}
+            placeholder={route.params.problem?.name}
             placeholderTextColor="gray"
             keyboardType="default"
           />
           <Checkbox
-            value={true}
-            onValueChange={() => console.log("checked")}
+            value={newSentValue}
+            onValueChange={setNewSentValue}
             color="black"
           />
         </View>
@@ -58,16 +113,20 @@ const ProblemDetails = ({ navigation, route }) => {
         }}
       >
         <View style={styles.imageContainer}>
-          <Image
-            style={{ height: "100%", width: "100%" }}
-            source={{uri: "http://10.0.0.217:5000/image/4179faa643c43fa866aa66c786bbc433"}}
-          ></Image>
+          {imageKey && (
+            <Image
+              style={{ height: "100%", width: "100%" }}
+              source={{
+                uri: imageKey,
+              }}
+            ></Image>
+          )}
         </View>
         <View style={styles.descriptionContainer}>
           {/* Show Static Description in View Mode*/}
           {!editMode && (
             <ScrollView>
-              <Text>{description}</Text>
+              <Text>{route.params.problem?.description}</Text>
             </ScrollView>
           )}
           {/* Show Description Input in Edit Mode */}
@@ -77,9 +136,9 @@ const ProblemDetails = ({ navigation, route }) => {
                 alignSelf: "flex-start",
               }}
               multiline
-              onChangeText={() => "set new description"}
-              value={""}
-              placeholder={description}
+              onChangeText={setNewDescription}
+              value={newDescription}
+              placeholder={route.params.problem?.description}
               placeholderTextColor="white"
               keyboardType="default"
             />
@@ -96,11 +155,7 @@ const ProblemDetails = ({ navigation, route }) => {
           )}
           {/* Show "Save" Button in Edit Mode */}
           {editMode && (
-            <Button
-              title="Save Problem"
-              onPress={() => console.log("save!")}
-              color="#A6F3CA"
-            />
+            <Button title="Save Problem" onPress={handleSave} color="#A6F3CA" />
           )}
         </View>
       </View>
@@ -145,6 +200,18 @@ const styles = StyleSheet.create({
     margin: 6,
     height: 35,
     width: 325,
+  },
+  snackbarStyle: {
+    height: 50,
+    width: 150,
+  },
+});
+
+// Make snackbar success message green
+const theme = Object.assign({}, DefaultTheme, {
+  colors: {
+    ...DefaultTheme.colors,
+    onSurface: "#53c273",
   },
 });
 

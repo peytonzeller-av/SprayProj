@@ -2,9 +2,8 @@ const Problem = require("../models/Problem");
 
 exports.createProblem = async (req, res) => {
   try {
-    console.log("saving...");
+    console.log("Creating New Problem...", req.body);
     const newProb = new Problem({ ...req.body, created: Date.now() });
-    console.log(req.body);
     await newProb.save();
     res.status(200).send("success!");
   } catch (e) {
@@ -15,12 +14,12 @@ exports.createProblem = async (req, res) => {
 
 exports.updateProblem = async (req, res) => {
   try {
-    console.log("updating problem...");
+    console.log("updating problem...", req.body);
     const problem = await Problem.findByIdAndUpdate(
       req.body.key,
       req.body.problem
     );
-    res.status(200).send("success!");
+    res.status(200).send({ data: problem });
   } catch (e) {
     console.log("error updating problem", e);
     res.status(500).send({ error: "error updating problem" });

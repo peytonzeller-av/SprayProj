@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
@@ -6,6 +5,7 @@ const schema = new mongoose.Schema({
   grade: Number,
   sent: Boolean,
   filePath: String,
+  description: String,
   created: Date,
 });
 

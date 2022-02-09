@@ -63,8 +63,7 @@ const ProblemList = ({ refreshList }) => {
                 title={problem.name}
                 onPress={() =>
                   navigation.navigate("ProblemView", {
-                    name: problem.name,
-                    grade: problem.grade,
+                    problem,
                   })
                 }
                 right={(props) => getSentIcon(problem)}

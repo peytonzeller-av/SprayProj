@@ -11,7 +11,6 @@ import { Snackbar, DefaultTheme } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { setWarningFilter } from "react-native/Libraries/LogBox/Data/LogBoxData";
 
 const AddProblem = ({ navigation, route }) => {
   const [name, setName] = useState("");
@@ -22,8 +21,8 @@ const AddProblem = ({ navigation, route }) => {
   const [disableSaveButton, setDisableSaveButton] = useState(true);
   const [successMessage, setSuccessMessage] = useState(false);
 
+  // Enable save button when all fields are filled out
   useEffect(() => {
-    console.log(name, grade, description);
     if (name && grade && description && image) {
       setDisableSaveButton(false);
     }
@@ -61,7 +60,6 @@ const AddProblem = ({ navigation, route }) => {
       });
 
       if (!response?.cancelled) {
-        console.log("file", response);
         setImage(response?.uri);
         setFile(response);
       }
@@ -70,20 +68,14 @@ const AddProblem = ({ navigation, route }) => {
 
   const uploadImage = async () => {
     try {
-      console.log("trying to save image client...... ");
+      console.log("Client: Saving Image...... ");
       const formData = new FormData();
-      // formData.append("uploaded_problem_image", {
-      //   uri: file.uri,
-      //   type: file.type,
-      //   name: "testing...",
-      // });
       formData.append("uploaded_problem_image", {
         name: new Date() + "_problem",
         uri: file.uri,
         type: "image/jpg",
       });
-      console.log("formData: ", formData);
-      await fetch("http://10.0.0.217:5000/image", {
+      const result = await fetch("http://10.0.0.217:5000/image", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -91,39 +83,41 @@ const AddProblem = ({ navigation, route }) => {
         },
         body: formData,
       });
-      console.log("success saving image - client");
+      return result.json();
     } catch (e) {
       console.log("failed uploading problem image - client", e);
     }
   };
 
-  // TODO - still working.. need to get the file path
   const saveProblem = async () => {
-    await uploadImage();
-    const req = Object.assign(
-      {},
-      {
-        name,
-        description,
-        grade,
-        filePath: "",
-      }
-    );
-
-    // await fetch(
-    //   "http://10.0.0.217:5000/create",
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(req),
-    //   } // TODO - ENV specific
-    // );
-    // setSuccessMessage(true);
-    // setTimeout(() => {
-    //   navigation.navigate("Home", { refreshList: true });
-    // }, 5000);
+    try {
+      const imageUpload = await uploadImage();
+      const { data: filePath } = imageUpload;
+      const req = Object.assign(
+        {},
+        {
+          name,
+          description,
+          grade,
+          filePath,
+          sent: false,
+        }
+      );
+      // TODO - ENV specific
+      await fetch("http://10.0.0.217:5000/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req),
+      });
+      setSuccessMessage(true);
+      setTimeout(() => {
+        navigation.navigate("Home", { refreshList: true });
+      }, 2000);
+    } catch (e) {
+      console.log("error saving problem ", e);
+    }
   };
   return (
     <View style={styles.view}>
@@ -134,11 +128,7 @@ const AddProblem = ({ navigation, route }) => {
       )}
       {successMessage && (
         <View style={styles.snackbarStyle}>
-          <Snackbar
-            visible={successMessage}
-            onDismiss={() => console.log("")}
-            theme={theme}
-          >
+          <Snackbar visible={successMessage} theme={theme}>
             Problem Saved!
           </Snackbar>
         </View>
@@ -206,6 +196,7 @@ const AddProblem = ({ navigation, route }) => {
   );
 };
 
+// Make snackbar success message green
 const theme = Object.assign({}, DefaultTheme, {
   colors: {
     ...DefaultTheme.colors,

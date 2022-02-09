@@ -5,6 +5,10 @@ const bodyParser = require("body-parser");
 const Problem = require("./models/Problem");
 const problemController = require("./controllers/problems");
 const { uploadFile, getFileStream } = require("./s3");
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
+
 const app = express();
 const port = 5000;
 
@@ -14,7 +18,7 @@ app.use(bodyParser.json());
 app.post("/create", problemController.createProblem);
 app.get("/problems", problemController.getAllProblems);
 app.delete("/delete", problemController.deleteProblemById);
-app.post("/update", problemController.updateProblem);
+app.put("/update", problemController.updateProblem);
 app.post("/getById", problemController.findProblemById);
 
 app.listen(port, () => {
@@ -29,12 +33,11 @@ app.post(
   async (req, res) => {
     try {
       const file = req.file;
-      console.log("file, ", file);
-      const result = await uploadFile(file);
-      console.log("-------------", file);
-
-      // res.status(200).send({ data: file.filename });
-      res.send({ imagePath: `/images/${result.Key}` });
+      console.log("uploading file to s3.... ", file);
+      await uploadFile(file);
+      console.log("deleting file from express server...")
+      await unlinkFile(file.path);
+      res.status(200).send({ data: file.filename });
     } catch (e) {
       console.log("error uplaoding image ", e);
     }
@@ -46,7 +49,7 @@ app.get("/image/:key", (req, res) => {
   console.log("req key", req.params.key);
   const readStream = getFileStream(key);
 
-  console.log("piping....");
+  console.log("piping s3 image response to server....");
   readStream.pipe(res);
 });
 
