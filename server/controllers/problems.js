@@ -39,9 +39,10 @@ exports.getAllProblems = async (req, res) => {
 
 exports.deleteProblemById = async (req, res) => {
   try {
-    console.log("req.body....", req.body);
-    await Problem.deleteOne({ id: req.body.id });
-    res.status(200).send("success!");
+    console.log("deleting problem....", req.body);
+    const deleted = await Problem.findByIdAndDelete(req.body.id);
+    console.log("Problem Deleted: ", deleted);
+    res.status(200).send("success deleting problem!");
   } catch (e) {
     console.log("error deleting problems", e);
     res.status(500).send({ error: "error deleting problem" });

@@ -11,6 +11,7 @@ import { Snackbar, DefaultTheme } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
+import { grades } from "../constants";
 
 const AddProblem = ({ navigation, route }) => {
   const [name, setName] = useState("");
@@ -23,26 +24,10 @@ const AddProblem = ({ navigation, route }) => {
 
   // Enable save button when all fields are filled out
   useEffect(() => {
-    if (name && grade && description && image) {
+    if (name && grade && image) {
       setDisableSaveButton(false);
     }
   });
-
-  // Static list of grades
-  const grades = [
-    { label: "V1", value: 1 },
-    { label: "V2", value: 2 },
-    { label: "V3", value: 3 },
-    { label: "V4", value: 4 },
-    { label: "V5", value: 5 },
-    { label: "V6", value: 6 },
-    { label: "V7", value: 7 },
-    { label: "V8", value: 8 },
-    { label: "V9", value: 9 },
-    { label: "V10", value: 10 },
-    { label: "V11", value: 11 },
-    { label: "V12", value: 12 },
-  ];
 
   // Choose Image
   const openImageLibrary = async () => {

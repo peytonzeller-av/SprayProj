@@ -11,14 +11,18 @@ import Checkbox from "expo-checkbox";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 import { Snackbar, DefaultTheme } from "react-native-paper";
+import { Picker } from "@react-native-picker/picker";
+import { grades } from "../constants";
 
 const ProblemDetails = ({ navigation, route }) => {
   const [editMode, setEditMode] = useState(false);
   const [newDescription, setNewDescription] = useState("");
   const [newName, setNewName] = useState("");
+  const [newGrade, setNewGrade] = useState(route.params?.problem.grade);
   const [newSentValue, setNewSentValue] = useState(route.params.problem?.sent);
   const [imageKey, setImageKey] = useState(null);
   const [successMessage, setSuccessMessage] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState(false);
 
   // Get Problem Image
   useEffect(async () => {
@@ -41,7 +45,7 @@ const ProblemDetails = ({ navigation, route }) => {
         key: route.params.problem?._id,
         problem: {
           name: newName ? newName : route.params.problem?.name,
-          grade: route.params.problem?.grade,
+          grade: newGrade,
           description: newDescription
             ? newDescription
             : route.params.problem?.description,
@@ -50,7 +54,6 @@ const ProblemDetails = ({ navigation, route }) => {
         },
       }
     );
-    console.log("reques...", req);
     await fetch("http://10.0.0.217:5000/update", {
       method: "PUT",
       headers: {
@@ -63,13 +66,47 @@ const ProblemDetails = ({ navigation, route }) => {
       navigation.navigate("Home", { refreshList: true });
     }, 2000);
   };
+
+  handleDelete = async () => {
+    console.log("Deleting problem....", route.params.problem._id);
+    await fetch("http://10.0.0.217:5000/delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: route.params.problem?._id }),
+    });
+    setTimeout(() => {
+      navigation.navigate("Home", { refreshList: true });
+    }, 2000);
+  };
+
   return (
     <View>
+      {/* Success Snackbar */}
       {successMessage && (
         <View style={{ justifyContent: "center", flexDirection: "row" }}>
           <View style={styles.snackbarStyle}>
             <Snackbar visible={successMessage} theme={theme}>
               Problem Saved!
+            </Snackbar>
+          </View>
+        </View>
+      )}
+      {/* Delete Snackbar */}
+      {deleteMessage && (
+        <View style={{ justifyContent: "center", flexDirection: "row" }}>
+          <View style={styles.deleteSnackbarStyle}>
+            <Snackbar
+              theme={deleteTheme}
+              visible={deleteMessage}
+              action={{
+                label: "Yes",
+                onPress: () => handleDelete(),
+              }}
+              onDismiss={() => setDeleteMessage(false)}
+            >
+              Are you sure?
             </Snackbar>
           </View>
         </View>
@@ -106,6 +143,23 @@ const ProblemDetails = ({ navigation, route }) => {
           />
         </View>
       )}
+      {editMode && (
+        <View style={styles.topContainer}>
+          <Picker
+            style={styles.input}
+            selectedValue={newGrade}
+            onValueChange={setNewGrade}
+          >
+            {grades.map((grade, idx) => (
+              <Picker.Item
+                label={grade.label}
+                value={grade.value}
+                key={`${grade}-${idx}`}
+              />
+            ))}
+          </Picker>
+        </View>
+      )}
       <View
         style={{
           alignItems: "center",
@@ -123,12 +177,19 @@ const ProblemDetails = ({ navigation, route }) => {
               }}
             ></Image>
           )}
+          {!imageKey && <Text style={styles.uploadBtn}>Loading Image...</Text>}
         </View>
-        <View style={styles.descriptionContainer}>
+        <View
+          style={
+            editMode
+              ? styles.editDescriptionContainer
+              : styles.descriptionContainer
+          }
+        >
           {/* Show Static Description in View Mode*/}
           {!editMode && (
             <ScrollView>
-              <Text>{route.params.problem?.description}</Text>
+              <Text>{route.params.problem?.description || "Description"}</Text>
             </ScrollView>
           )}
           {/* Show Description Input in Edit Mode */}
@@ -140,13 +201,17 @@ const ProblemDetails = ({ navigation, route }) => {
               multiline
               onChangeText={setNewDescription}
               value={newDescription}
-              placeholder={route.params.problem?.description}
+              placeholder={route.params.problem?.description || "Description"}
               placeholderTextColor="white"
               keyboardType="default"
             />
           )}
         </View>
-        <View style={styles.buttonContainer}>
+        <View
+          style={
+            !editMode ? styles.buttonContainer : styles.editModeButtonContainer
+          }
+        >
           {/* Show "Edit" Button in View Mode */}
           {!editMode && (
             <Button
@@ -157,7 +222,27 @@ const ProblemDetails = ({ navigation, route }) => {
           )}
           {/* Show "Save" Button in Edit Mode */}
           {editMode && (
-            <Button title="Save Problem" onPress={handleSave} color="#A6F3CA" />
+            <View
+              style={{
+                justifyContent: "center",
+                flexDirection: "column",
+                alignContent: "center",
+              }}
+            >
+              <Button
+                title="Delete Problem"
+                onPress={() => {
+                  console.log("setDeleteMessage");
+                  setDeleteMessage(true);
+                }} // TODO
+                color="#DA8C8C"
+              />
+              <Button
+                title="Save Problem"
+                onPress={handleSave}
+                color="#A6F3CA"
+              />
+            </View>
           )}
         </View>
       </View>
@@ -178,7 +263,7 @@ const styles = StyleSheet.create({
     width: 300,
   },
   imageContainer: {
-    height: 500,
+    height: 575,
     width: 325,
     borderRadius: 10,
     margin: 6,
@@ -199,6 +284,15 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     width: 325,
+    height: 75,
+    borderRadius: 10,
+    borderWidth: 0.75,
+    overflow: "hidden",
+    margin: 6,
+    padding: 5,
+  },
+  editDescriptionContainer: {
+    width: 325,
     height: 150,
     borderRadius: 10,
     borderWidth: 0.75,
@@ -213,9 +307,31 @@ const styles = StyleSheet.create({
     height: 35,
     width: 325,
   },
+  editModeButtonContainer: {
+    borderRadius: 10,
+    overflow: "hidden",
+    margin: 6,
+    padding: 5,
+    height: 85,
+    width: 325,
+  },
   snackbarStyle: {
     height: 50,
     width: 150,
+  },
+  deleteSnackbarStyle: {
+    height: 50,
+    width: 250,
+  },
+  uploadBtn: {
+    fontSize: 16,
+    opacity: 0.3,
+    fontWeight: "bold",
+  },
+  input: {
+    height: 35,
+    width: 325,
+    marginLeft: 10,
   },
 });
 
@@ -224,6 +340,13 @@ const theme = Object.assign({}, DefaultTheme, {
   colors: {
     ...DefaultTheme.colors,
     onSurface: "#53c273",
+  },
+});
+
+const deleteTheme = Object.assign({}, DefaultTheme, {
+  colors: {
+    ...DefaultTheme.colors,
+    onSurface: "#B074F7",
   },
 });
 
