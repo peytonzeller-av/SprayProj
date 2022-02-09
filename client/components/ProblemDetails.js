@@ -112,7 +112,9 @@ const ProblemDetails = ({ navigation, route }) => {
           justifyContent: "center",
         }}
       >
-        <View style={styles.imageContainer}>
+        <View
+          style={editMode ? styles.editImageContainer : styles.imageContainer}
+        >
           {imageKey && (
             <Image
               style={{ height: "100%", width: "100%" }}
@@ -176,7 +178,17 @@ const styles = StyleSheet.create({
     width: 300,
   },
   imageContainer: {
-    height: 300,
+    height: 500,
+    width: 325,
+    borderRadius: 10,
+    margin: 6,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 0.75,
+    overflow: "hidden",
+  },
+  editImageContainer: {
+    height: 250,
     width: 325,
     borderRadius: 10,
     margin: 6,
