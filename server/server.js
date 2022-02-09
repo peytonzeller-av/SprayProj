@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const Problem = require("./models/Problem");
 const problemController = require("./controllers/problems");
-const { uploadFile, getFileStream } = require("./s3");
+const { uploadFile, getFileStream, deleteFile } = require("./s3");
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
@@ -35,7 +35,7 @@ app.post(
       const file = req.file;
       console.log("uploading file to s3.... ", file);
       await uploadFile(file);
-      console.log("deleting file from express server...")
+      console.log("deleting file from express server...");
       await unlinkFile(file.path);
       res.status(200).send({ data: file.filename });
     } catch (e) {
@@ -51,6 +51,18 @@ app.get("/image/:key", (req, res) => {
 
   console.log("piping s3 image response to server....");
   readStream.pipe(res);
+});
+
+app.delete("/delete-image/:key", async (req, res) => {
+  try {
+    const key = req.params.key;
+    console.log("deleting image key: ", req.params.key);
+    const result = await deleteFile(key);
+    console.log("Delete Key Result: ", result);
+    res.status(200).send("success!");
+  } catch (e) {
+    console.log("error deleting image ", e);
+  }
 });
 
 mongoose.connect("mongodb://localhost:27017/sprayproj-db").then(

@@ -68,17 +68,32 @@ const ProblemDetails = ({ navigation, route }) => {
   };
 
   handleDelete = async () => {
-    console.log("Deleting problem....", route.params.problem._id);
-    await fetch("http://10.0.0.217:5000/delete", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: route.params.problem?._id }),
-    });
-    setTimeout(() => {
-      navigation.navigate("Home", { refreshList: true });
-    }, 2000);
+    try {
+      console.log("Deleting problem....", route.params.problem._id);
+      // Delete Problem in MongoDB
+      await fetch("http://10.0.0.217:5000/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: route.params.problem?._id }),
+      });
+      // Delete image in s3
+      await fetch(
+        `http://10.0.0.217:5000/delete-image/${route.params.problem?.filePath}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setTimeout(() => {
+        navigation.navigate("Home", { refreshList: true });
+      }, 2000);
+    } catch (e) {
+      console.log("error deleting problem", e);
+    }
   };
 
   return (
