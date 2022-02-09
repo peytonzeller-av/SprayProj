@@ -129,7 +129,7 @@ const ProblemDetails = ({ navigation, route }) => {
       {!editMode && (
         <View style={styles.topContainer}>
           {/* Display Static Name/ Sent Status For Non-Edit Mode */}
-          <Text style={styles.titleHeader}>
+          <Text style={editMode ? styles.editTitleHeader : styles.titleHeader}>
             {route.params.problem?.name}, V{route.params.problem?.grade}
           </Text>
           {route.params.problem.sent && (
@@ -144,7 +144,7 @@ const ProblemDetails = ({ navigation, route }) => {
       {editMode && (
         <View style={styles.topContainer}>
           <TextInput
-            style={styles.titleHeader}
+            style={styles.editTitleHeader}
             onChangeText={setNewName}
             value={newName}
             placeholder={route.params.problem?.name}
@@ -249,7 +249,7 @@ const ProblemDetails = ({ navigation, route }) => {
                 onPress={() => {
                   console.log("setDeleteMessage");
                   setDeleteMessage(true);
-                }} // TODO
+                }}
                 color="#DA8C8C"
               />
               <Button
@@ -275,11 +275,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     padding: 10,
+    width: 325,
+  },
+  editTitleHeader: {
+    fontSize: 20,
+    fontWeight: "bold",
+    padding: 10,
     width: 300,
   },
   imageContainer: {
-    height: 575,
-    width: 325,
+    height: 415,
+    width: 375,
     borderRadius: 10,
     margin: 6,
     justifyContent: "center",
@@ -298,7 +304,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   descriptionContainer: {
-    width: 325,
+    width: 375,
     height: 75,
     borderRadius: 10,
     borderWidth: 0.75,
@@ -320,7 +326,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     margin: 6,
     height: 35,
-    width: 325,
+    width: 375,
   },
   editModeButtonContainer: {
     borderRadius: 10,
