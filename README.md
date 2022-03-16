@@ -23,8 +23,8 @@ In order to run this app, I run it locally on my computer and then open Expo on 
 in my server folder in order to fire up the BE that controls all the HTTP calls that handle data to/ from MongoDB as well as getting the correct image files from Amazon S3. 
 Running it locally from my computer works completely fine because I'm always sessioning in my garage anyways! 
 
+![image](https://user-images.githubusercontent.com/27656191/158702975-ee075da8-de3e-487e-898e-0b534f46085a.png)
+
+
 Thanks for reading!
 Peyton
-![Screenshot_20220316-163736](https://user-images.githubusercontent.com/27656191/158702875-8a118273-d78a-49f5-9ed2-cd620a5fb1e0.png)
-![Screenshot_20220316-163714](https://user-images.githubusercontent.com/27656191/158702877-7f1ca9ff-1517-4ba2-a86a-592af41c2c57.png)
-![Screenshot_20220316-163645](https://user-images.githubusercontent.com/27656191/158702880-e4b939f9-934d-481d-a844-1bd2edb8e356.png)
