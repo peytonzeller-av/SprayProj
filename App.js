@@ -15,8 +15,16 @@ export default function App() {
           component={Home}
           options={{ title: "Peyton's Problems" }}
         />
-        <Stack.Screen name="ProblemView" component={ProblemDetails} />
-        <Stack.Screen name="AddProblemView" component={AddProblem} />
+        <Stack.Screen
+          name="ProblemView"
+          component={ProblemDetails}
+          options={{ title: "Problem Details" }}
+        />
+        <Stack.Screen
+          name="AddProblemView"
+          component={AddProblem}
+          options={{ title: "" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
