@@ -6,7 +6,7 @@ home-wall, or "Spray Wall" (as we like to call it), was to use it as a training 
 
 A typical Spray Wall session looks like this: a few friends get together in someone's garage, they decide on a series of holds and foot-holds to use in order to make it from
 the bottom to the top, thus creating a "problem". The idea is to make it very difficult in order to train finger strength and train body awareness. Once every one finishes the 
-chosen problem, they can agree on a given difficulty grade for the chosen route. Finally, we crack a beer and reward ourselves for our training session.
+chosen problem, they can agree on a difficulty grade for the chosen route. Finally, we crack a beer and reward ourselves for our training session.
 
 This is all fine and dandy, and I've had several Spray Wall sessions where we pick a problem, do the problem, and leave it at that. However, I realized that one thing I was missing
 was a way to keep track of the climbs we had come up with. There were alternative apps, but most of them required us to pay a hefty fee any time I added or removed holds from 
@@ -25,3 +25,6 @@ Running it locally from my computer works completely fine because I'm always ses
 
 Thanks for reading!
 Peyton
+![Screenshot_20220316-163736](https://user-images.githubusercontent.com/27656191/158702875-8a118273-d78a-49f5-9ed2-cd620a5fb1e0.png)
+![Screenshot_20220316-163714](https://user-images.githubusercontent.com/27656191/158702877-7f1ca9ff-1517-4ba2-a86a-592af41c2c57.png)
+![Screenshot_20220316-163645](https://user-images.githubusercontent.com/27656191/158702880-e4b939f9-934d-481d-a844-1bd2edb8e356.png)
